@@ -10,7 +10,11 @@ public class PlayerLocomotion : MonoBehaviour
     public Transform orientation;
 
     Vector3 moveDirection;
-    public float movementSpeed = 7;
+    public float walkingSpeed = 1.5f;
+    public float runningSpeed = 5;
+    public float sprintingSpeed = 7;
+
+    public bool isSprinting;
 
     private void Awake()
     {
@@ -29,7 +33,23 @@ public class PlayerLocomotion : MonoBehaviour
         moveDirection = orientation.forward * inputManager.verticalInput + orientation.right * inputManager.horizontalInput;
         moveDirection.Normalize();
         moveDirection.y = 0;
-        Vector3 movementVelocity = moveDirection * movementSpeed; ;
+
+        Vector3 movementVelocity;
+        if (isSprinting)
+        {
+            movementVelocity = moveDirection * sprintingSpeed;
+        }
+        else
+        {
+            if(inputManager.moveAmount >= 0.5f)
+            {
+                movementVelocity = moveDirection * runningSpeed;
+            }
+            else
+            {
+                movementVelocity = moveDirection * walkingSpeed;
+            }
+        }
 
         playerRigidBody.AddForce(movementVelocity, ForceMode.Acceleration); 
     }
